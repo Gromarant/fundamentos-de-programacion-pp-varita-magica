@@ -53,34 +53,8 @@ const handleArticleAndSections = (e) => {
 articles.forEach(article => article.addEventListener('click', handleArticleAndSections));
 sections.forEach(section => section.addEventListener('click', handleArticleAndSections));
 
-
-/* Cuando el cursor esté sobre alguno de los siguientes elementos, seguir las instrucciones siguientes, y devolver dicho elemento a su estado original cuando salga el cursor.*/
-
-/* 3.1 Imágenes: Cambia la imagen por el gif abracadabra.gif.*/
-/* 3.2 Párrafos: Cambia el color del texto y el de fondo por uno cualquiera.*/
-
-const handleMouseEnter = (e) => {
-  if (e.target.nodeName === 'IMG') {
-    e.target.src = './assets/abracadabra.gif';
-  } 
-  else if (e.target.nodeName === 'P') {
-    e.target.style.color = setRandomColor();
-    e.target.style.backgroundColor = setRandomColor();
-  }
-  else if (e.target.nodeName === 'ARTICLE' || e.target.nodeName === 'SECTION') {
-    let pColor = e.target.style.color = setRandomColor();
-    let blockColor = e.target.style.backgroundColor = setRandomColor();
-    if (pColor === blockColor) {
-      blockColor;
-    }
-  }
-}
-
-images.forEach(image => image.addEventListener('mouseenter', handleMouseEnter));
-paragraphs.forEach(paragraph => paragraph.addEventListener('mouseenter', handleMouseEnter));
-
 //Premium
-/* 4. Crea una función de nombre getRandom que acepte un array con valores y devuelva uno de ellos de manera aleatoria.*/
+/* 4. Crea una función de nombre getRandom que acepte un array con valores y devuelva uno de ellos de manera aleatoria.*/ 
 /* Color Palette: https://coolors.co/palette/001219-005f73-0a9396-94d2bd-e9d8a6-ee9b00-ca6702-bb3e03-ae2012-9b2226 */
 const colors = ['red', 'blue', 'green']
 const colorsFromCoolors = ['0, 18, 25', '0, 95, 115', '10, 147, 150', '148, 210, 189', '233, 216, 166', '238, 155, 0', '202, 103, 2', '187, 62, 3', '174, 32, 18', '155, 34, 38'];
@@ -90,7 +64,63 @@ const getRandom = (arr) => {
   let max = arr.length;
 
   let random = Math.floor(Math.random() * (max-min) + min);
-  return arr[random];
+  return `rgb(${ arr[random] })`;
 }
 console.log(getRandom(colors));
 console.log(getRandom(colorsFromCoolors));
+
+/* Cuando el cursor esté sobre alguno de los siguientes elementos, seguir las instrucciones siguientes, y devolver dicho elemento a su estado original cuando salga el cursor.*/
+
+/* 3.1 Imágenes: Cambia la imagen por el gif abracadabra.gif.*/
+/* 3.2 Párrafos: Cambia el color del texto y el de fondo por uno cualquiera.*/
+let originalImg;
+let pOriginalColor;
+let pOriginalBgColor;
+let sectionBgColor;
+
+const handleMouseOver = (e) => {
+  let nodeName = e.target.nodeName; 
+
+  if (nodeName === 'IMG') {
+      originalImg = e.target.src;
+
+      e.target.src = './assets/abracadabra.gif';
+    } 
+    else if (nodeName === 'P') {
+      pOriginalColor = e.target.style.color;
+      pOriginalBgColor = e.target.style.backgroundColor;
+
+      e.target.style.color = getRandom(colorsFromCoolors);
+      e.target.style.backgroundColor = getRandom(colorsFromCoolors);
+    }
+    else if (nodeName === 'ARTICLE' || nodeName === 'SECTION') {
+      sectionBgColor = e.target.style.backgroundColor;
+
+      let pColor = e.target.style.color;
+      let blockColor = e.target.style.backgroundColor = getRandom(colorsFromCoolors);
+      if (pColor === blockColor) {
+        blockColor ;
+      }
+    }
+}
+
+const handleMouseOut = (e) => {
+  let nodeName = e.target.nodeName; 
+  
+  if (nodeName === 'IMG') {
+    e.target.src = originalImg;
+  } 
+  else if (nodeName === 'P') {
+    e.target.style.color = pOriginalColor;
+    e.target.style.backgroundColor = pOriginalBgColor;
+  }
+  else if (nodeName === 'ARTICLE' || nodeName === 'SECTION') {
+    e.target.style.backgroundColor = sectionBgColor;
+  }
+}
+
+images.forEach(image => image.addEventListener('mouseover', handleMouseOver));
+paragraphs.forEach(paragraph => paragraph.addEventListener('mouseover', handleMouseOver));
+
+images.forEach(image => image.addEventListener('mouseout', handleMouseOut));
+paragraphs.forEach(paragraph => paragraph.addEventListener('mouseout', handleMouseOut));
